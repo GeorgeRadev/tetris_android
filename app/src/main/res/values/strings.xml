@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Tetris</string>
+    <string name="title">Tetris</string>
+    <string name="start">Start</string>
+    <string name="back">Back</string>
+    <string name="best">BEST %1$d</string>
+    <string name="score">SCORE %1$d</string>
+    <string name="next">NEXT</string>
+    <string name="game_over">GAME OVER\n%1$d</string>
+    <string name="play_again">Play Again</string>
+    <string name="rotate_left">Rotate left</string>
+    <string name="rotate_right">Rotate right</string>
+    <string name="move_left">Move left</string>
+    <string name="move_right">Move right</string>
+</resources>
