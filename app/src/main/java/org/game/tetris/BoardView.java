@@ -22,9 +22,11 @@ import android.view.View;
  * bitmap is blitted with a single paint and only the active piece is drawn
  * on top, so the per-frame work is a bitmap blit plus at most 4 rectangles.
  *
- * Gestures: dragging left/right moves the piece, dragging up rotates it
- * left, dragging down drops it. A plain tap keeps the older behavior:
- * bottom strip drops, left half moves left, right half moves right.
+ * Gestures: dragging left/right moves the piece, dragging up rotates it in
+ * the direction chosen on the start screen, dragging down drops it. A plain
+ * tap also controls the piece: upper half rotates like the drag-up gesture,
+ * bottom strip drops, the strip in between moves left on the left half and
+ * right on the right half.
  */
 public class BoardView extends View {
 
@@ -32,7 +34,7 @@ public class BoardView extends View {
     public interface Actions {
         void moveLeft();
         void moveRight();
-        void rotateLeft();
+        void rotateUp();
         void drop();
     }
 
@@ -237,6 +239,8 @@ public class BoardView extends View {
                 if (y > getHeight() * 0.8f) {
                     actions.drop();
                     bufferDirty = true; // the stack changed
+                } else if (y < getHeight() * 0.5f) {
+                    actions.rotateUp();
                 } else if (x < getWidth() / 2f) {
                     actions.moveLeft();
                 } else {
@@ -266,9 +270,9 @@ public class BoardView extends View {
                 actions.moveRight();
             }
         } else if (Math.abs(dy) >= threshold) {
-            // vertical drag: up rotates left, down drops
+            // vertical drag: up rotates, down drops
             if (dy < 0) {
-                actions.rotateLeft();
+                actions.rotateUp();
             } else {
                 actions.drop();
                 bufferDirty = true; // the stack changed

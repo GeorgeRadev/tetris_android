@@ -2,6 +2,7 @@
     <string name="app_name">Tetris</string>
     <string name="title">Tetris</string>
     <string name="start">Start</string>
+    <string name="rotation_direction">SWIPE UP ROTATES</string>
     <string name="back">Back</string>
     <string name="best">BEST %1$d</string>
     <string name="score">SCORE %1$d</string>

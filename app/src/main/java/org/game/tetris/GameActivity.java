@@ -12,8 +12,10 @@ import androidx.appcompat.app.AppCompatActivity;
 /** Game screen: the board in the center, controls at the bottom, scores at the top. */
 public class GameActivity extends AppCompatActivity implements BoardView.Actions {
 
-    private static final String PREFS = "tetris_prefs";
     private static final String KEY_HIGH_SCORE = "high_score";
+
+    /** Direction of the swipe-up / top-half rotation, set from the start screen. */
+    private boolean rotateLeftOnUp = true;
 
     private final Handler handler = new Handler(Looper.getMainLooper());
     private final Runnable tick = new Runnable() {
@@ -43,8 +45,9 @@ public class GameActivity extends AppCompatActivity implements BoardView.Actions
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
-        SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+        SharedPreferences prefs = getSharedPreferences(MainActivity.PREFS, MODE_PRIVATE);
         int highScore = prefs.getInt(KEY_HIGH_SCORE, 0);
+        rotateLeftOnUp = prefs.getBoolean(MainActivity.KEY_ROTATE_LEFT_ON_UP, true);
         game = new TetrisGame();
         game.setHighScore(highScore);
 
@@ -94,16 +97,25 @@ public class GameActivity extends AppCompatActivity implements BoardView.Actions
         findViewById(id).setOnClickListener(listener);
     }
 
-    @Override
-    public void rotateLeft() {
-        if (game.isGameOver()) return;
-        game.rotateLeft();
-        sync();
-    }
-
     private void rotateRight() {
         if (game.isGameOver()) return;
         game.rotateRight();
+        sync();
+    }
+
+    /** Swipe up / tap the upper half: rotates in the chosen direction. */
+    @Override
+    public void rotateUp() {
+        if (rotateLeftOnUp) {
+            rotateLeft();
+        } else {
+            rotateRight();
+        }
+    }
+
+    private void rotateLeft() {
+        if (game.isGameOver()) return;
+        game.rotateLeft();
         sync();
     }
 
@@ -162,7 +174,7 @@ public class GameActivity extends AppCompatActivity implements BoardView.Actions
     @Override
     protected void onStop() {
         super.onStop();
-        getSharedPreferences(PREFS, MODE_PRIVATE).edit()
+                getSharedPreferences(MainActivity.PREFS, MODE_PRIVATE).edit()
                 .putInt(KEY_HIGH_SCORE, game.getHighScore()).apply();
     }
 

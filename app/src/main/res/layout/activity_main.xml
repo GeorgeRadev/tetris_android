@@ -21,13 +21,57 @@
             android:paddingTop="24dp"
             android:text="@string/title"
             android:textColor="@color/textBlack"
-            android:textSize="28sp"
+            android:textSize="40sp"
             android:textStyle="bold" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1" />
+
+        <!-- rotation direction selector: swipe up / tap top-half rotates this way -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="32dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="8dp"
+                android:text="@string/rotation_direction"
+                android:textColor="@color/textBlack"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/rotateLeftSelect"
+                    android:layout_width="80dp"
+                    android:layout_height="64dp"
+                    android:layout_marginEnd="12dp"
+                    android:background="@drawable/bg_rotate_unselected"
+                    android:contentDescription="@string/rotate_left"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_rotate_left" />
+
+                <ImageButton
+                    android:id="@+id/rotateRightSelect"
+                    android:layout_width="80dp"
+                    android:layout_height="64dp"
+                    android:background="@drawable/bg_rotate_unselected"
+                    android:contentDescription="@string/rotate_right"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_rotate_right" />
+            </LinearLayout>
+        </LinearLayout>
 
         <TextView
             android:id="@+id/startButton"
