@@ -94,7 +94,8 @@ public class GameActivity extends AppCompatActivity implements BoardView.Actions
         findViewById(id).setOnClickListener(listener);
     }
 
-    private void rotateLeft() {
+    @Override
+    public void rotateLeft() {
         if (game.isGameOver()) return;
         game.rotateLeft();
         sync();

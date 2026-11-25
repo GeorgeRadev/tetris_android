@@ -18,6 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:gravity="center"
+            android:paddingTop="24dp"
             android:text="@string/title"
             android:textColor="@color/textBlack"
             android:textSize="28sp"

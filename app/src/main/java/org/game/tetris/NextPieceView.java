@@ -23,9 +23,9 @@ public class NextPieceView extends View {
         super(context, attrs);
         float density = context.getResources().getDisplayMetrics().density;
         activeFillPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        activeFillPaint.setColor(GameColors.white);
+        activeFillPaint.setColor(GameColors.black);
         activeStrokePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        activeStrokePaint.setColor(GameColors.black);
+        activeStrokePaint.setColor(GameColors.lightGray);
         activeStrokePaint.setStyle(Paint.Style.STROKE);
         activeStrokePaint.setStrokeWidth(1.5f * density);
     }
@@ -62,8 +62,8 @@ public class NextPieceView extends View {
                 rect.set(
                         ox + c * cell + pad,
                         oy + r * cell + pad,
-                        ox + (c + 1) * cell - pad,
-                        oy + (r + 1) * cell - pad
+                        ox + (c + 1) * cell - pad - 1,
+                        oy + (r + 1) * cell - pad - 1
                 );
                 canvas.drawRect(rect, activeFillPaint);
                 canvas.drawRect(rect, activeStrokePaint);

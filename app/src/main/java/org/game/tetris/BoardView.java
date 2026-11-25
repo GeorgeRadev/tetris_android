@@ -22,8 +22,9 @@ import android.view.View;
  * bitmap is blitted with a single paint and only the active piece is drawn
  * on top, so the per-frame work is a bitmap blit plus at most 4 rectangles.
  *
- * Touch zones: the bottom strip drops the piece; a tap on the left half moves
- * it left, on the right half moves it right; a downward drag also drops.
+ * Gestures: dragging left/right moves the piece, dragging up rotates it
+ * left, dragging down drops it. A plain tap keeps the older behavior:
+ * bottom strip drops, left half moves left, right half moves right.
  */
 public class BoardView extends View {
 
@@ -31,6 +32,7 @@ public class BoardView extends View {
     public interface Actions {
         void moveLeft();
         void moveRight();
+        void rotateLeft();
         void drop();
     }
 
@@ -53,8 +55,9 @@ public class BoardView extends View {
     private boolean bufferDirty = true;
 
     // gesture state
+    private float downX;
     private float downY;
-    private boolean droppedByDrag;
+    private boolean gestureDone;
 
     public BoardView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -70,7 +73,7 @@ public class BoardView extends View {
         guidePaint.setStrokeWidth(1f * density);
 
         lockedFillPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        lockedFillPaint.setColor(GameColors.lightGray);
+        lockedFillPaint.setColor(GameColors.darkGray);
 
         lockedStrokePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         lockedStrokePaint.setColor(GameColors.black);
@@ -78,7 +81,7 @@ public class BoardView extends View {
         lockedStrokePaint.setStrokeWidth(1f * density);
 
         activeFillPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        activeFillPaint.setColor(GameColors.white);
+        activeFillPaint.setColor(GameColors.lightGray);
 
         activeStrokePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         activeStrokePaint.setColor(GameColors.black);
@@ -200,8 +203,8 @@ public class BoardView extends View {
                 dstRect.set(
                         c * cell + inset,
                         r * cell + inset,
-                        (c + 1) * cell - inset,
-                        (r + 1) * cell - inset
+                        (c + 1) * cell - inset - 1,
+                        (r + 1) * cell - inset - 1
                 );
                 canvas.drawRect(dstRect, activeFillPaint);
                 canvas.drawRect(dstRect, activeStrokePaint);
@@ -209,27 +212,23 @@ public class BoardView extends View {
         }
     }
 
-    private static final int DRAG_DROP_PX = 40;
+    /** How far a drag must travel before it counts as a gesture. */
+    private static final int DRAG_PX = 40;
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (game == null || actions == null) return super.onTouchEvent(event);
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                downX = event.getX();
                 downY = event.getY();
-                droppedByDrag = false;
+                gestureDone = false;
                 return true;
             case MotionEvent.ACTION_MOVE:
-                if (!droppedByDrag && !game.isGameOver()) {
-                    if (event.getY() - downY > DRAG_DROP_PX * density) {
-                        droppedByDrag = true;
-                        actions.drop();
-                        bufferDirty = true; // the stack changed
-                    }
-                }
+                handleDrag(event.getX(), event.getY());
                 return true;
             case MotionEvent.ACTION_UP:
-                if (droppedByDrag) {
+                if (gestureDone) {
                     return true;
                 }
                 if (game.isGameOver()) return true;
@@ -247,5 +246,38 @@ public class BoardView extends View {
             default:
                 return super.onTouchEvent(event);
         }
+    }
+
+    /**
+     * Turns a drag into a gesture once it passes the threshold. The origin
+     * resets after each gesture, so a long continuous drag can move or
+     * rotate the piece repeatedly.
+     */
+    private void handleDrag(float x, float y) {
+        if (gestureDone || game.isGameOver()) return;
+        float dx = x - downX;
+        float dy = y - downY;
+        float threshold = DRAG_PX * density;
+        if (Math.abs(dx) >= threshold && Math.abs(dx) > Math.abs(dy)) {
+            // horizontal drag: move the piece in the drag direction
+            if (dx < 0) {
+                actions.moveLeft();
+            } else {
+                actions.moveRight();
+            }
+        } else if (Math.abs(dy) >= threshold) {
+            // vertical drag: up rotates left, down drops
+            if (dy < 0) {
+                actions.rotateLeft();
+            } else {
+                actions.drop();
+                bufferDirty = true; // the stack changed
+            }
+        } else {
+            return;
+        }
+        downX = x;
+        downY = y;
+        gestureDone = true;
     }
 }
