@@ -331,8 +331,8 @@ public class TetrisGame {
             case 4: gained = 800L; break;
             default: gained = 0L;
         }
-        score += gained * level;
-        level = (int) (score / 1000) + 1;
+        score += gained;
+        level = (int) (score / 10000) + 1;
 
         piece = nextPiece;
         nextPiece = rollPiece();

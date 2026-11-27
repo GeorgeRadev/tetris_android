@@ -9,8 +9,8 @@ A minimal, dependency-light Tetris for Android, written in Java. The game logic 
 - Touch gestures on the board (see below)
 - Configurable rotation direction for the swipe-up gesture (chosen on the start screen)
 - Next-piece preview, score, level and best score (persisted between sessions)
-- Score: 100 / 300 / 500 / 800 × level for clearing 1 / 2 / 3 / 4 lines
-- Gravity speeds up with each level (800 ms at level 1, −70 ms per level, 100 ms minimum)
+- Score: 100 / 300 / 500 / 800 for clearing 1 / 2 / 3 / 4 lines (no level multiplier)
+- Level increases every 10,000 points; gravity speeds up with each level (800 ms at level 1, −70 ms per level, 100 ms minimum)
 
 ## Controls
 
@@ -29,9 +29,9 @@ A drag can be extended to repeat the same action (e.g. drag far left to move sev
 
 | Zone | Action |
 | --- | --- |
-| Upper half | Rotate (direction chosen on the start screen) |
-| Middle band | Move left (left half) / move right (right half) |
-| Bottom strip | Hard drop |
+| Upper half (above 50%) | Rotate (direction chosen on the start screen) |
+| Middle band (50%–90%) | Move left (left half) / move right (right half) |
+| Bottom strip (below 90%) | Hard drop |
 
 ### Buttons
 

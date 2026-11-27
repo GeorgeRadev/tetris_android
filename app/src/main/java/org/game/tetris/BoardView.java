@@ -236,7 +236,7 @@ public class BoardView extends View {
                 if (game.isGameOver()) return true;
                 float x = event.getX();
                 float y = event.getY();
-                if (y > getHeight() * 0.8f) {
+                if (y > getHeight() * 0.9f) {
                     actions.drop();
                     bufferDirty = true; // the stack changed
                 } else if (y < getHeight() * 0.5f) {
